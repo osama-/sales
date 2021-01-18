@@ -1,6 +1,7 @@
 package com.maids.sales.service;
 
 
+import com.maids.sales.api.v1.contract.product.ProductDTO;
 import com.maids.sales.api.v1.mapper.ProductMapper;
 import com.maids.sales.dao.ProductJPARepository;
 import com.maids.sales.entity.Product;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     private ProductJPARepository productJpaRepository;
     private final ProductMapper productMapper;
+
     @Autowired
     public ProductServiceImpl(ProductJPARepository productJpaRepository, ProductMapper productMapper) {
         this.productJpaRepository = productJpaRepository;
@@ -22,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> findAll() {
-        return  productJpaRepository.findAll();
+        return productJpaRepository.findAll();
 
     }
 
@@ -30,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
     public Product findById(int id) {
         Optional<Product> result = this.productJpaRepository.findById(id);
         Product product = null;
-        if(result.isPresent())
+        if (result.isPresent())
             product = result.get();
         else
             throw new RuntimeException("Did not find product id -" + id);
@@ -39,9 +41,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void save(Product product) {
+    public Product save(Product product) {
+        if (product.getId() == 0) {
 
-            this.productJpaRepository.save(product);
+            return this.productJpaRepository.save(product);
+        }
+
+        Optional<Product> result = this.productJpaRepository.findById(product.getId());
+        Product existing = null;
+        if (result.isPresent())
+            existing = result.get();
+        else
+            throw new RuntimeException("Did not find product id -" + product.getId());
+        existing.setDescription(product.getDescription());
+        existing.setCategory(product.getCategory());
+        existing.setName(product.getName());
+        return this.productJpaRepository.save(existing);
+
     }
 
 

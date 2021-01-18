@@ -10,7 +10,7 @@ public interface ClientService {
     public List<ClientDTO> findAll();
     public ClientDTO findById(int id);
 
-    public void save(Client client);
+    public Client save(Client client);
 
 
 }

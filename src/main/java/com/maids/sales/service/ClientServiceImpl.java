@@ -41,9 +41,9 @@ public class ClientServiceImpl implements  ClientService {
     }
 
     @Override
-    public void save(Client client) {
+    public Client save(Client client) {
 
-            this.clientJPARepository.save(client);
+            return this.clientJPARepository.save(client);
     }
 
 
